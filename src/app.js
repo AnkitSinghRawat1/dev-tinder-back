@@ -1,37 +1,28 @@
-const express = require("express")
-
-const app = express()
+const express = require("express");
+const {adminAuth, userAuth} = require('./middlewares/authMiddleware')
+const app = express();
 
 // route hadnlers ---> (req,res)=>{}
 //  app.use("/route",rh0,[rh1,rh2], rh3 , rh4 , rh5 )
 
-app.get("/user",[ (req, res, next)=>{
-    console.log("1st Route Handler")
-    res.send({
-        firstName: "Ankit",
-        lastName:"Singh"
-    })
-    next()
-}, (req,res, next) =>{
-    console.log("2nd route handler")
-    res.send({
-        firstName: "Ankit2",
-        lastName:"Singh2"
-    }) 
-}], (req,res, next) =>{
-    console.log("3rd route handler")
-    res.send({
-        firstName: "Ankit3",
-        lastName:"Singh3"
-    }) 
-}, (req,res, next) =>{
-    console.log("4th route handler")
-    res.send({
-        firstName: "Ankit4",
-        lastName:"Singh4"
-    }) 
-}) 
+app.use("/admin", adminAuth) 
 
-app.listen(3000, ()=>{
-    console.log('server is running')
+app.get('/user/all',userAuth, (req, res)=>{
+    res.send("all userrs here")
 })
+
+app.post('/user/login', (req, res) => {
+    res.send("User login successfully!")
+})
+
+app.get("/admin/getAllData", (req, res, next) => {
+  res.send("Get All Data");
+});
+
+app.delete("/admin/deleteUser", (req, res) => {
+  res.send("Deleted a User");
+});
+
+app.listen(3000, () => {
+  console.log("server is running");
+});
