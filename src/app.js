@@ -21,6 +21,36 @@ app.post("/signup", async (req, res) =>{
 
 })
 
+
+// get user by ID from DB
+app.get("/user", async (req, res) =>{
+      const {emailId} = req.body
+      try{
+        const users = await User.find({emailId})
+        console.log(users)
+        if(users.length === 0){
+          res.status(404).send("user not found")
+        }else{
+          res.send({msg: "user matched",data:  users[0]})
+        }
+      }catch(err){
+        res.send(400).send("something went wrong")
+      }
+ 
+})
+
+// get all users from DB
+app.get("/feed", async (req, res) =>{
+      try{
+        const users = await User.find()
+        res.send({message: "users found", data: users})
+      }catch(err){
+        res.send(400).send("something went wrong")
+      }
+ 
+ 
+})
+
 connectDB()
   .then(() => {
     console.log("database connection established...");
