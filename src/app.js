@@ -15,6 +15,7 @@ app.post("/signup", async (req, res) =>{
     await user.save();   
     res.send("User signup successfully")
   } catch(err){
+    console.log(err.message)
     res.status(400).send("error savong the user ", err.message)
   }
  
@@ -77,16 +78,19 @@ app.patch("/user", async (req, res)=>{
 
   try{
     // const user = await User.findByIdAndDelete({_id: userId})
-    console.log('id is :', userId)
-      const user = await User.findByIdAndUpdate(userId, {firstName:'surya', lastName:"Sharma"})
+    const updatedFields = req.body
+      const user = await User.findByIdAndUpdate(userId, updatedFields,{
+        returnDocument: 'after',
+        runValidators: true
+      })
       console.log('user id ', user)
       if(user){
-        res.send("User updated successfully", user)
+        res.send("User updated successfully "+ user)
       } else {
         res.send('user not found')
       }
   }catch(err){
-        res.send(400).send("something went wrong")
+        res.status(400).send("something went wrong " +err.message)
       }
 })
 
