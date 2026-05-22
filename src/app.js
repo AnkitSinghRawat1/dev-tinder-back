@@ -2,21 +2,32 @@ const express = require("express");
 const { connectDB } = require("./config/database");
 const User = require("./models/user")
 const app = express();
+const {validationSignupData} = require("./utils/validation")
+const bcrypt = require("bcrypt")
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) =>{
  
-  // creating a new instance of a user module
- 
-  const userObj = req.body 
-  const user = new User(userObj)
   try{
+    // validation of data
+    validationSignupData(req)
+  
+    // encrypted password
+    const {firstName, lastName, password, emailId, age, skills, gender} = req.body 
+    const passwordHash = await bcrypt.hash(password, 10)
+    console.log(passwordHash)
+    
+  
+    // creating a new instance of a user module
+    const user = new User({
+      firstName, lastName, password: passwordHash, emailId, age, skills, gender
+    })
     await user.save();   
     res.send("User signup successfully")
   } catch(err){
     console.log(err.message)
-    res.status(400).send("error savong the user ", err.message)
+    res.status(400).send("error savong the user "+ err.message)
   }
  
 
