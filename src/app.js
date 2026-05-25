@@ -33,6 +33,30 @@ app.post("/signup", async (req, res) =>{
 
 })
 
+app.get("/login", async (req, res) => {
+  try{
+    const {emailId, password} = req.body
+
+    const user = await User.findOne({emailId})
+
+    if(!user){
+      throw new Error("Email id is not Registered")
+    }
+
+     const isPasswordValid = await bcrypt.compare(password, user.password )
+
+     if(isPasswordValid){
+      console.log( {firstName: user?.firstName, lastName: user?.lastName, emailId: user?.emailId})
+       res.status(200).send("user login successfull "+ {firstName: user?.firstName, lastName: user?.lastName, emailId: user?.emailId})
+      } else {
+       res.status(401).send("password not correct ")
+     }
+
+  }catch(err){
+    res.status(404).send("Something went wrong " + err.message)
+  }
+})
+
 
 // get user by ID from DB
 app.get("/user", async (req, res) =>{
