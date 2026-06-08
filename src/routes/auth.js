@@ -1,9 +1,8 @@
-const express = require("express")
-const authRouter = express.Router()
+const express = require("express");
+const authRouter = express.Router();
 const { validationSignupData } = require("../utils/validation");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
-
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -43,7 +42,7 @@ authRouter.get("/login", async (req, res) => {
       throw new Error("Email id is not Registered");
     }
 
-    const isPasswordValid = await user.isPassValid(password)
+    const isPasswordValid = await user.isPassValid(password);
 
     if (isPasswordValid) {
       const accessToken = await user.getJWT();
@@ -65,4 +64,11 @@ authRouter.get("/login", async (req, res) => {
   }
 });
 
-module.exports = authRouter
+authRouter.post("/logout", async (req, res) => {
+  res
+    .cookie("token", null, {
+      expires: new Date(Date.now()),
+    })
+    .send("User has been Logout");
+});
+module.exports = authRouter;
