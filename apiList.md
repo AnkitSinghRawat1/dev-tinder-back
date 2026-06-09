@@ -16,8 +16,8 @@ post /request/send/:status/:userId
 post /request/review/:status/:requestId
 
 ## userRouter
-get /user/connections
 get /user/requests/received
+get /user/connections
 get /user/feeds
 
 
